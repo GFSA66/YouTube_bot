@@ -39,11 +39,12 @@ async def start(message):
 
 @bot.message_handler()
 async def handle_youtube_link(message: types.Message):
-    searchList = Search(message.text)
+    searchList = VideosSearch(message.text, limit = 5).result()['result']
     keyboard = list()
     for element in searchList:
         keyboard.append([types.InlineKeyboardButton(text=element['title'], callback_data=element['link'])])
-        await bot.send_message(message.chat.id, searchList.results())
+    choose_markup =  types.InlineKeyboardMarkup(keyboard, 1)
+    await bot.send_message(message.chat.id, 'Найденные варианты:', reply_markup=choose_markup)
 
 #@bot.message_handler()
 #async def search_on_youtube(message: types.Message):
