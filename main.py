@@ -9,6 +9,8 @@ from pytube import *
 from youtubesearchpython import VideosSearch
 import os
 import requests
+from io import BytesIO
+from aiogram.types import BufferedInputFile
 
 bot = AsyncTeleBot(TOKEN)
 
@@ -42,8 +44,9 @@ async def handle_youtube_link(message: types.Message):
     searchList = VideosSearch(message.text, limit = 5).result()['result']
     keyboard = list()
     for element in searchList:
-        keyboard.append([types.InlineKeyboardButton(text=element['title'], callback_data=element['link'])])
-    choose_markup =  types.InlineKeyboardMarkup(keyboard, 1)
+        a = [types.InlineKeyboardButton(text=element['title'], callback_data=element['link'])]
+        keyboard.append(a)
+    choose_markup =  types.InlineKeyboardMarkup(keyboard,1)
     await bot.send_message(message.chat.id, 'Найденные варианты:', reply_markup=choose_markup)
 
 #@bot.message_handler()
@@ -53,26 +56,40 @@ async def handle_youtube_link(message: types.Message):
 #    yt.streams
 #    keyboard = list()
 #    await bot.send_message(message.chat.id,yt.streams.filter(file_extension='mp4'),reply_markup=keyboards.res)
-#@bot.callback_query_handler(func = lambda call:True)
-#async def call_streams(call):
-#    if call.data =='144':
-#        stream = yt.streams.get_by_itag(160)
-#        stream.download()
-#    if call.data =='240':
-#        stream = yt.streams.get_by_itag(133)
-#        stream.download()
-#    if call.data =='360':
-#        stream = yt.streams.get_by_itag(18)
-#        stream.download()
-#    if call.data =='480':
-#        stream = yt.streams.get_by_itag(135)
-#        stream.download()
-#    if call.data =='720':
-#        stream = yt.streams.get_by_itag(22)
-#        stream.download()
-#    if call.data =='1080':
-#        stream = yt.streams.get_by_itag(137)
-#        stream.download()
+@bot.callback_query_handler(func = lambda call:True)
+async def call_streams(call):
+    if call.data =='link':
+        await bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.id,text= "Choose: ",reply_markup=keyboards.res)
+    #if call.data =='144':
+    #    stream = yt.streams.get_by_itag(160)
+    #    stream.download()
+    #if call.data =='240':
+    #    stream = yt.streams.get_by_itag(133)
+    #    stream.download()
+    #if call.data =='360':
+    #    stream = yt.streams.get_by_itag(18)
+    #    stream.download()
+    #if call.data =='480':
+    #    stream = yt.streams.get_by_itag(135)
+    #    stream.download()
+    #if call.data =='720':
+    #    stream = yt.streams.get_by_itag(22)
+    #    stream.download()
+    #if call.data =='1080':
+    #    stream = yt.streams.get_by_itag(137)
+    #    stream.download()
+async def download_youtube_audio(message: types.Message, url):
+	try:
+		yt = YouTube(url)
+		stream = yt.streams.filter(only_audio=True).first()
+		buffer = BytesIO()
+		stream.stream_to_buffer(buffer)
+		file = BufferedInputFile(buffer.getvalue(), filename=f"{yt.title}.mp3")
+		await bot.send_audio(file)
+		buffer.flush()
+	except Exception as e:
+		await bot.send_message(message.chat.id,f"Ошибка при скачивании или отправке видео: {str(e)}")
+    
 
 async def main():
     await bot.polling()
