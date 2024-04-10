@@ -52,11 +52,17 @@ async def handle_youtube_link(message: types.Message):
 @bot.callback_query_handler(func = lambda call:True)
 async def call_streams(call: types.CallbackQuery):
 	if "youtube.com" in call.data or "youtu.be" in call.data:
+		global data1
+		print(call.data)
+		data1 = call.data
 		await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id, text=call.data) #добавить установку аудио или видео
+		await bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id,reply_markup=keyboards.res)
+	if call.data == 'video':
+		call.data = data1
 		await download_youtube_video(call.data, call.message.chat.id)
+	if call.data == 'audio':
+		call.data = data1
 		await download_youtube_audio_only(call.data, call.message.chat.id)
-		# await bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id)
-	# if call.data in keyboards.resolutions:
 	
 async def download_youtube_video(url, chat_id):
 	try:
@@ -68,19 +74,19 @@ async def download_youtube_video(url, chat_id):
 		buffer.flush()
 	except Exception as e:
 		print(e)
-		await bot.send_message(chat_id, f"Ошибка при скачивании или отправке видео: {str(e)}")
+		await bot.send_message(chat_id, f"Ошибка при скачивании или отправке видео: \n{str(e)}")
 		
 async def download_youtube_audio_only(url, chat_id):
 	try:
 		yt = YouTube(url)
-		stream = yt.streams.filter(adaptive=True, only_audio=True).get_audio_only()
+		stream = yt.streams.filter(only_audio=True).first()
 		buffer = BytesIO()
 		stream.stream_to_buffer(buffer)
-		await bot.send_audio(chat_id, buffer.getvalue())
+		await bot.send_audio(chat_id, buffer.getvalue()) # filename = f"{yt.title}"
 		buffer.flush()
 	except Exception as e:
 		print(e)
-		await bot.send_message(chat_id, f"Ошибка при скачивании или отправке аудио: {str(e)}")
+		await bot.send_message(chat_id, f"Ошибка при скачивании или отправке аудио: \n{str(e)}")
 		
 	
 

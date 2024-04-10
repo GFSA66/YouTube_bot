@@ -7,7 +7,7 @@ menu = types.ReplyKeyboardMarkup()
 menu.add(btn1,btn2)
 
 resolutions = ['144', '240', '360', '480', '720', '1080']
-download_choose = ['video','audio','video + audio']
+download_choose = ['video','audio']
 
 res = types.InlineKeyboardMarkup(row_width=2)
 
