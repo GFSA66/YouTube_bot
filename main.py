@@ -24,8 +24,12 @@ from pytube.metadata import YouTubeMetadata
 from pytube.monostate import Monostate
 
 
+#  https://t.me/Youtubescr_bot
+#  https://t.me/Youtubescr_bot
+#  https://t.me/Youtubescr_bot
+#  https://t.me/Youtubescr_bot
+
 bot = AsyncTeleBot(TOKEN)
-# updater = Updater(token='TOKEN', request_kwargs={'read_timeout': 1000, 'connect_timeout': 1000})
 
 ids = list()
 names = list()
@@ -70,7 +74,6 @@ async def handle_youtube_link(message: types.Message):
 	choose_markup =  types.InlineKeyboardMarkup(keyboard,1)
 	await bot.send_message(message.chat.id, 'Найденные варианты:', reply_markup=choose_markup)
 
-
 @bot.callback_query_handler(func = lambda call:True)
 async def call_streams(call: types.CallbackQuery):
 	global data1
@@ -78,7 +81,7 @@ async def call_streams(call: types.CallbackQuery):
 		if "youtube.com" in call.data or "youtu.be" in call.data:
 			print(call.data)
 			data1 = call.data
-			await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id, text=call.data) #добавить установку аудио или видео
+			await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id, text=call.data) 
 			await bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id,reply_markup=keyboards.res)
 		if call.data == 'Video':
 			call.data = data1
@@ -114,8 +117,6 @@ async def download_youtube_audio_only(url, chat_id):
 		print(e)
 		await bot.send_message(chat_id, f"Ошибка при скачивании или отправке аудио: \n{str(e)}")
 		
-	
-
 async def main():
 	await bot.polling()
 
@@ -123,3 +124,5 @@ if __name__ == "__main__":
 	asyncio.run(main())
 
 asyncio.run(bot.polling(none_stop=True))
+
+# updater = Updater(token='TOKEN', request_kwargs={'read_timeout': 1000, 'connect_timeout': 1000})
