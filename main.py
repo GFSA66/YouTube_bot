@@ -10,18 +10,7 @@ from youtubesearchpython import *
 import os
 import requests
 from io import BytesIO
-from innertube import *
-import logging
-from typing import Any, Callable, Dict, List, Optional
-
-import pytube
-import pytube.exceptions as exceptions
-from pytube import extract, request
-from pytube import Stream, StreamQuery
-from pytube.helpers import install_proxy
-from pytube.innertube import InnerTube
-from pytube.metadata import YouTubeMetadata
-from pytube.monostate import Monostate
+from pytube.cli import on_progress
 
 
 #  https://t.me/Youtubescr_bot
