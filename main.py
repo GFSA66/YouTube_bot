@@ -11,7 +11,15 @@ import os
 import requests
 from io import BytesIO
 from pytube.cli import on_progress
+from pytube.innertube import _default_clients
+from bs4 import BeautifulSoup
+import requests
 
+_default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+}
 
 #  https://t.me/Youtubescr_bot
 #  https://t.me/Youtubescr_bot
@@ -42,8 +50,9 @@ async def start(message: types.Message):
 			names.append(username)
 	print("ID: "+str(userid)+";","username: "+str(username)+";","time: "+ str(current_datetime.hour)+":"+ str(current_datetime.minute)+ ":"+str(current_datetime.second))
 	print(ids,names)
-	await bot.send_message(message.chat.id, "Привет! Здесь ты сможешь скачать видео с YouTube или анимешку, а если что-то не понятно то просто напиши'/help'",reply_markup=keyboards.menu)
+	await bot.send_message(message.chat.id, "Привет! Здесь ты сможешь скачать видео с YouTube или анимешку, а если что-то не понятно то просто напиши'/help'",reply_markup=keyboards.yourchoose)
 	await bot.send_sticker(message.chat.id, "CAACAgIAAxkBAAIrIGYTCo3qRYeGuVFXVYABqO_m3sNBAAIFAAPANk8T-WpfmoJrTXU0BA")
+
 @bot.message_handler(commands = ["help"])
 async def help(message: types.Message):
 	await bot.send_message(message.chat.id, '''Привет! Здесь ты сможешь скачать видео с YouTube или анимешку, \n\nВидео не должно быть: 
@@ -52,16 +61,50 @@ async def help(message: types.Message):
 						Просто жди пока оно загрузиться
 						Если что то пойдёт не так, то тебе об этом напишет''',reply_markup=keyboards.menu)
 
-
 @bot.message_handler()
-async def handle_youtube_link(message: types.Message):
-	searchList = VideosSearch(message.text, limit = 10).result()['result']
-	keyboard = list()
-	for element in searchList:
-		a = [types.InlineKeyboardButton(text=element['title'], callback_data=element['link'])]
-		keyboard.append(a)
-	choose_markup =  types.InlineKeyboardMarkup(keyboard,1)
-	await bot.send_message(message.chat.id, 'Найденные варианты:', reply_markup=choose_markup)
+
+#async def handle_youtube_link(message: types.Message): # ,call: types.CallbackQuery
+#	try:
+#		#if call.data == "YouTube":
+#			
+#	except Exception as e:
+#		print(e)
+#		await bot.send_message(message.chat.id, text=f"Ошибка: \n{str(e)}")
+		
+async def weather(message: types.Message): # ,call: types.CallbackQuery
+	try:
+		#if call.data == "Weather":
+			city = message.text.replace(" ", "+")
+			res = requests.get(f'https://www.google.ru/search?q={city}+погода', headers=headers)
+			await bot.send_message(message.chat.id,"Поиск в google...n")
+			soup = BeautifulSoup(res.text, 'html.parser')   
+			
+			# Изменим селекторы, чтобы соответствовать измененной структуре страницы
+			location = soup.select('.BNeawe.iBp4i.AP7Wnd')[0].getText().strip()  
+			time = soup.select('.BNeawe.tAd8D.AP7Wnd')[0].getText().strip()       
+			info = soup.select('.BNeawe.tAd8D.AP7Wnd')[1].getText().strip() 
+			weather = soup.select('.BNeawe.iBp4i.AP7Wnd')[1].getText().strip()
+			
+			await bot.send_message(message.chat.id,location)
+			await bot.send_message(message.chat.id,time)
+			await bot.send_message(message.chat.id,info) # ,reply_markup=keyboards.yourchoose
+	except Exception as e:
+		searchList = VideosSearch(message.text, limit = 10).result()['result']
+		keyboard = list()
+		for element in searchList:
+			a = [types.InlineKeyboardButton(text=element['title'], callback_data=element['link'])]
+			keyboard.append(a)
+		choose_markup =  types.InlineKeyboardMarkup(keyboard,1)
+		await bot.send_message(message.chat.id, 'Найденные варианты:', reply_markup=choose_markup)
+		#print(e)
+		#await bot.send_message(message.chat.id, text=f"Ошибка: \n{str(e)}")
+
+
+
+#print("Введите название города")
+#city = input()
+#weather(city)
+
 
 @bot.callback_query_handler(func = lambda call:True)
 async def call_streams(call: types.CallbackQuery):
@@ -80,7 +123,7 @@ async def call_streams(call: types.CallbackQuery):
 			await download_youtube_audio_only(call.data, call.message.chat.id)
 	except Exception as e:
 		print(e)
-		await bot.send_message(chat_id=call.message.chat.id, message_id=call.message.id, text=f"Ошибка при скачивании или отправке видео: \n{str(e)}")
+		await bot.send_message(chat_id=call.message.chat.id, message_id=call.message.id, text=f"Ошибка: \n{str(e)}")
 
 async def download_youtube_video(url, chat_id):
 	try:
