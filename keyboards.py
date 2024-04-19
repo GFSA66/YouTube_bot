@@ -12,12 +12,9 @@ emojies = ['🎦','🎧']
 choose_what_you_wanna_do = ['YouTube','Weather']
 
 res = types.InlineKeyboardMarkup(row_width=2)
-yourchoose = types.InlineKeyboardMarkup()
-i=0
-a=0
-for resolution in download_choose:
-    res.add(types.InlineKeyboardButton(emojies[i]+resolution, callback_data=resolution))
-    i+=1
-for resolution in choose_what_you_wanna_do:
-    yourchoose.add(types.InlineKeyboardButton(resolution, callback_data=resolution))
-    a+=1
+yourchoose = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+
+for index, resolution in enumerate(download_choose):
+    res.add(types.InlineKeyboardButton(emojies[index]+resolution, callback_data=resolution))
+for index, choose in enumerate(choose_what_you_wanna_do):
+    yourchoose.add(types.KeyboardButton(choose))
