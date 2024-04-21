@@ -1,3 +1,4 @@
+import telebot
 import wikipedia
 from telebot import types
 
