@@ -90,6 +90,7 @@ async def query(message: types.Message): # ,call: types.CallbackQuery
 async def call_streams(call: types.CallbackQuery):
 	try:
 		if "youtube.com" in call.data or "youtu.be" in call.data:
+			print(call.data)
 			await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id, text=call.data) 
 			await bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id, reply_markup=keyboards.res)
 		if call.data == 'Video':
