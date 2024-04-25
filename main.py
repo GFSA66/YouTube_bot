@@ -42,14 +42,14 @@ async def start(message: types.Message):
 		print("ID: "+str(userid)+";","username: "+str(username)+";","time: "+ str(current_datetime.hour)+":"+ str(current_datetime.minute)+ ":"+str(current_datetime.second))
 		print(ids,names)
 		await bot.send_sticker(message.chat.id, "CAACAgIAAxkBAAIrIGYTCo3qRYeGuVFXVYABqO_m3sNBAAIFAAPANk8T-WpfmoJrTXU0BA")
-		await bot.send_message(message.chat.id, "Привет! Здесь ты сможешь скачать видео с YouTube или анимешку, а если что-то не понятно то просто напиши'/help'",reply_markup=keyboards.yourchoose)
+		await bot.send_message(message.chat.id, "Привет! Здесь ты сможешь скачать видео с YouTube, а если что-то не понятно то просто напиши'/help'",reply_markup=keyboards.yourchoose)
 	except Exception as e:
 		print(e)
 		await bot.send_message(chat_id=message.chat.id, message_id=message.id, text=f"Ошибка: \n{str(e)}")
 
 @bot.message_handler(commands = ["help"])
 async def help(message: types.Message):
-	await bot.send_message(message.chat.id, '''Привет! Здесь ты сможешь скачать видео с YouTube или анимешку, \n\nВидео не должно быть: 
+	await bot.send_message(message.chat.id, '''Привет! Здесь ты сможешь скачать видео с YouTube, \n\nВидео не должно быть: 
 						Слишком длинным
 						Высокого качества(2к или 4к)
 						Просто жди пока оно загрузиться
