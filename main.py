@@ -9,6 +9,7 @@ import keyboards
 from youTube import download_youtube_audio_only, download_youtube_video, search_youtube_content
 from weatherScraper import weather_scrap
 from wikipedia_for_tg import send_info_from_wikipedia
+from music import download_soundCloud_audio
 
 _default_clients["ANDROID_MUSIC"] = _default_clients["ANDROID_CREATOR"]
 
@@ -76,6 +77,9 @@ async def query(message: types.Message): # ,call: types.CallbackQuery
 		if message.text == "Wikipedia":
 			storage[message.from_user.id] = message.text
 			return await bot.send_message(message.chat.id, "Wikipedia")
+		if message.text == "SoundCloud":
+			storage[message.from_user.id] = message.text
+			return await bot.send_message(message.chat.id, "SoundCloud")
 		if not storage[message.from_user.id]:
 			return await bot.send_message(message.chat.id, "Сделайте выбор") # ,reply_markup=keyboards.yourchoose
 		if storage[message.from_user.id] == "YouTube":
@@ -84,6 +88,10 @@ async def query(message: types.Message): # ,call: types.CallbackQuery
 			await bot.send_message(message.chat.id, text=await weather_scrap(message))
 		if storage[message.from_user.id] == "Wikipedia":
 			await bot.send_message(message.chat.id, text=await send_info_from_wikipedia(message))
+		# if storage[message.from_user.id] == "SoundCloud":
+		# 	filename = download_soundCloud_audio(message.text)
+		# 	file = types.InputFile(filename)
+		# 	await bot.send_audio(message.chat.id, file)
 	except Exception as e:
 		print(e)
 		await bot.send_message(chat_id=message.chat.id, message_id=message.id, text=f"Ошибка: \n{str(e)}")
