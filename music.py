@@ -1,7 +1,5 @@
 from io import BytesIO
 from sclib import SoundcloudAPI, Track, Playlist
-from sclib.sync import get_ssl_setting
-from urllib.request import urlopen
 # 'https://soundcloud.com/itsmeneedle/sunday-morning'
 api = SoundcloudAPI()  
 def download_soundCloud_audio(url):
