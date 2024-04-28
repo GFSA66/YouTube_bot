@@ -9,6 +9,7 @@ menu.add(btn1,btn2)
 resolutions = ['144', '240', '360', '480', '720', '1080']
 download_choose = ['Video','Audio']
 emojies = ['🎦','🎧']
+
 choose_what_you_wanna_do = ['YouTube','Weather','Wikipedia', 'GoogleNews']
 
 res = types.InlineKeyboardMarkup(row_width=2)
