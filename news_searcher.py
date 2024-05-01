@@ -1,7 +1,13 @@
 from GoogleNews import GoogleNews, ResultSet
+from telebot import types
 
-def search_news(keyword):
-    googlenews = GoogleNews(lang='uk', period='d', region='Ukraine')
-    googlenews.search(keyword)
-    result = googlenews.result()[0]
-    print(result.get('link').lower())
+async def search_news(message: types.Message):
+    try:
+        print("ok")
+        googlenews = GoogleNews(lang='uk', period='d', region='Ukraine')
+        googlenews.search(message)
+        result = googlenews.result()[0]
+        return f"{result.get('link').lower()}"
+    except Exception as e:
+        print(e)
+        return e

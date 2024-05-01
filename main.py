@@ -89,7 +89,8 @@ async def query(message: types.Message): # ,call: types.CallbackQuery
 		if storage[message.from_user.id] == "Wikipedia":
 			await bot.send_message(message.chat.id, text=await send_info_from_wikipedia(message))
 		if storage[message.from_user.id] == "GoogleNews":
-			search_news(message.text)
+			#search_news(message.text)
+			await bot.send_message(message.chat.id, text=await search_news(message))
 			await bot.send_message(message.chat.id, 'ok')
 	except Exception as e:
 		print(e)
