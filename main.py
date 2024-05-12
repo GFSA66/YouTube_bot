@@ -70,16 +70,16 @@ async def query(message: types.Message): # ,call: types.CallbackQuery
 	try:
 		if message.text == "Weather":
 			storage[message.from_user.id] = message.text
-			return await bot.send_message(message.chat.id, "Weather")
+			return await bot.send_message(message.chat.id, '''ви вибрали "Weather"''')
 		if message.text == "YouTube":
 			storage[message.from_user.id] = message.text
-			return await bot.send_message(message.chat.id, "YouTube")
+			return await bot.send_message(message.chat.id, '''вы вибрали "YouTube"''')
 		if message.text == "Wikipedia":
 			storage[message.from_user.id] = message.text
-			return await bot.send_message(message.chat.id, "Wikipedia")
+			return await bot.send_message(message.chat.id, '''Вы вибрали "Wikipedia"''')
 		if message.text == "GoogleNews":
 			storage[message.from_user.id] = message.text
-			return await bot.send_message(message.chat.id, "GoogleNews")
+			return await bot.send_message(message.chat.id, '''Вы выбрали "GoogleNews"''')
 		if not storage[message.from_user.id]:
 			return await bot.send_message(message.chat.id, "Сделайте выбор") # ,reply_markup=keyboards.yourchoose
 		if storage[message.from_user.id] == "YouTube":
