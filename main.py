@@ -25,6 +25,8 @@ names = list()
 
 storage = {}
 
+
+
 @bot.message_handler(commands = ["start"])
 async def start(message: types.Message):
 	try:
@@ -119,7 +121,11 @@ async def call_streams(call: types.CallbackQuery):
 
 		
 async def main():
-	await bot.polling()
+    # Удаляем активный webhook
+    await bot.remove_webhook()
+
+    # Запускаем polling
+    await bot.polling()
 
 if __name__ == "__main__":
 	asyncio.run(main())
